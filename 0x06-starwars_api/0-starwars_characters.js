@@ -1,16 +1,28 @@
 #!/usr/bin/node
 const request = require('request');
 
-request('https://swapi-api.hbtn.io/api/films/' + process.argv[2], function (err, res, body) {
-  if (err) throw err;
-  const actors = JSON.parse(body).characters;
-  exactOrder(actors, 0);
+const url = 'https://swapi-api.hbtn.io/api/people/' + process.argv[2];
+
+request(url, (err, res, body) => {
+  if (err) {
+    console.log(err);
+  }
+  const characters = JSON.parse(body).characters;
+  const promises = characters.map((character) => {
+    return new Promise((resolve, reject) => {
+      request(character, (err, res, body) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(JSON.parse(body).name);
+      });
+    });
+  }
+  );
+  Promise.all(promises).then((names) => {
+    names.forEach((name) => {
+      console.log(name);
+    });
+  }
+  );
 });
-const exactOrder = (actors, x) => {
-  if (x === actors.length) return;
-  request(actors[x], function (err, res, body) {
-    if (err) throw err;
-    console.log(JSON.parse(body).name);
-    exactOrder(actors, x + 1);
-  });
-};
