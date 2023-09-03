@@ -2,6 +2,8 @@
 """
 0-island_perimeter.py
 """
+
+
 def island_perimeter(grid):
     """Returns the perimeter of the island described in grid."""
     if not grid:
@@ -26,4 +28,3 @@ def island_perimeter(grid):
                     perimeter -= 1  # Subtract 1 if there's land to the right
 
     return perimeter
-
