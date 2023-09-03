@@ -6,10 +6,10 @@ def island_perimeter(grid):
     """Returns the perimeter of the island described in grid."""
     if not grid:
         return 0
-
+    
     rows, cols = len(grid), len(grid[0])
     perimeter = 0
-
+    
     for i in range(rows):
         for j in range(cols):
             if grid[i][j] == 1:
@@ -26,3 +26,4 @@ def island_perimeter(grid):
                     perimeter -= 1  # Subtract 1 if there's land to the right
 
     return perimeter
+
