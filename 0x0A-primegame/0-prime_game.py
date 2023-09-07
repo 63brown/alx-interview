@@ -3,9 +3,9 @@
 
 
 def isWinner(x, nums):
-    """determines winner"""
+    """determines the winner of multiple rounds of the game"""
     def is_prime(num):
-        """picks a prime number"""
+        """hecks if a given number num is prime or not."""
         if num < 2:
             return False
         for i in range(2, int(num**0.5) + 1):
@@ -14,22 +14,24 @@ def isWinner(x, nums):
         return True
 
     def can_win(n):
-        """determines win"""
-        if n == 1 or (n % 2 == 0 and n != 2):
-            # Ben wins when n is 1 or an even number greater than 2
-            return "Ben"
+        """determines whether player can win game with n as the starting nO"""
+        if n == 1:
+            return False
+        elif n % 2 == 0:
+            return True
+        elif is_prime(n):
+            return False
         else:
-            # Maria wins if Maria starts with an odd prime number
-            return "Maria"
+            return True
 
     maria_wins = 0
     ben_wins = 0
 
     for n in nums:
-        if can_win(n) == "Ben":
-            ben_wins += 1
-        else:
+        if can_win(n):
             maria_wins += 1
+        else:
+            ben_wins += 1
 
     if maria_wins > ben_wins:
         return "Maria"
