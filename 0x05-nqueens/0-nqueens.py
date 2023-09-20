@@ -1,15 +1,12 @@
 #!/usr/bin/python3
-"""N queens solution finder module. """
+"""N queens solution finder module.
+"""
 import sys
 
-
-# List to store all solutions to the N-Queens problem
 solutions = []
 
-# n value to store the number of queens
 n = 0
 
-# pos value to store all possible positions on the chessboard
 pos = None
 
 
@@ -21,7 +18,6 @@ def get_input():
     """
     global n
     n = 0
-    # Check if the user has provided the correct number of arguments
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
@@ -156,6 +152,4 @@ get_solutions()
 
 # Loop through all the solutions found
 for solution in solutions:
-    # Print each solution, represented as a list of positions of queens on
-    # the board
     print(solution)
