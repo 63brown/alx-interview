@@ -1,42 +1,40 @@
 #!/usr/bin/python3
+""" Log Parsing
 """
-Log Parsing
-"""
-
 import sys
-import re
-from collections import defaultdict
 
-# Regular expression to match the input format
-pattern = re.compile(
-    r'(\d+\.\d+\.\d+\.\d+) - \[([^\]]+)\] '
-    r'"GET /projects/260 HTTP/1\.1" (\d+) (\d+)')
 
-# Initialize variables for metrics
-total_size = 0
-status_code_count = defaultdict(int)
-lines_processed = 0
+def print_metrics(file_size, status_codes):
+    """reads stdin line by line and computes metrics
+    """
+    print("File size: {}".format(file_size))
+    codes_sorted = sorted(status_codes.keys())
+    for code in codes_sorted:
+        if status_codes[code] > 0:
+            print("{}: {}".format(code, status_codes[code]))
 
-try:
-    """reads stdin line by line and computes metrics"""
-    for line in sys.stdin:
-        # Match the input line with the regular expression
-        match = pattern.match(line)
-        if match:
-            ip_address, date, status_code, file_size = match.groups()
-            total_size += int(file_size)
-            status_code = int(status_code)
-            if status_code in [200, 301, 400, 401, 403, 404, 405, 500]:
-                status_code_count[status_code] += 1
-            lines_processed += 1
-            if lines_processed % 10 == 0:
-                print(f"Total file size: File size: {total_size}")
-                for code in sorted(status_code_count.keys()):
-                    print(f"{code}: {status_code_count[code]}")
-                print()
-except KeyboardInterrupt:
-    pass
 
-print(f"Total file size: File size: {total_size}")
-for code in sorted(status_code_count.keys()):
-    print(f"{code}: {status_code_count[code]}")
+codes_count = {'200': 0, '301': 0, '400': 0, '401': 0,
+               '403': 0, '404': 0, '405': 0, '500': 0}
+file_size_total = 0
+count = 0
+
+if __name__ == "__main__":
+    try:
+        for line in sys.stdin:
+            try:
+                status_code = line.split()[-2]
+                if status_code in codes_count.keys():
+                    codes_count[status_code] += 1
+                file_size = int(line.split()[-1])
+                file_size_total += file_size
+            except Exception:
+                pass
+            count += 1
+            if count == 10:
+                print_metrics(file_size_total, codes_count)
+                count = 0
+    except KeyboardInterrupt:
+        print_metrics(file_size_total, codes_count)
+        raise
+    print_metrics(file_size_total, codes_count)
